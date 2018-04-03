@@ -1,0 +1,169 @@
+ *******Bank Account Deposit******
+
+long	BankAccount::Deposit		(long longDeposit)	{
+	//Method Name: Deposit (BankAccount Class)
+	//Incoming Parameters: Integer for deposit amount
+	//Responsibilities: Will add amount of deposit to the transaction list array
+	//Return long: The value of the balance is returned
+
+
+	if (longDeposit <= 0){
+		cout << "Invalid amount entered. " << endl << endl;
+		//Add to invalid txn's
+		numInvalidTxn++;
+	}
+	else{
+		//Check if this is the first entry, asign accordingly
+		if (pFirst == NULL){
+			pFirst = pLast = new (nothrow)aTxn;
+		}
+		else{
+			pLast = pLast->pNext = new (nothrow)aTxn;
+		}
+		
+		//check that there is still memory for the deposit
+		if (pLast == NULL)
+		{
+			//if there is no memory return 0
+			return 0;
+		}
+		else
+		{
+			//make the deposit
+			Balance += pLast->TxnAmt = longDeposit;
+			//Set pNext to null
+			pLast->pNext = NULL;
+		}
+
+
+
+	}
+	return Balance;
+
+};//End Deposit
+
+
+
+*******Bank Account Withdrawal******
+
+long	BankAccount::Withdraw		(long longWithdraw)	{
+	//Method Name: Withdraw (BankAccount Class)
+	//Incoming Parameters: Integer for withdrawl amount
+	//Responsibilities: Will add amount of withdrawl to the transaction list array
+	//Return long: the value of the balance is returned
+
+
+	
+	if (longWithdraw <= 0){
+		cout << "Invalid amount. " << endl << endl;
+		//Add to invalid txn's
+		numInvalidTxn++;
+	}
+	else if(longWithdraw > Balance){
+		cout << "Insufficient funds. " << endl << endl;
+		//Add to invalid txn's
+		numInvalidTxn++;
+	}
+	else{
+		//Check if this is the first entry, asign accordingly
+		if (pFirst == NULL){
+			pFirst = pLast = new (nothrow)aTxn;
+		}
+		else{
+			pLast = pLast->pNext = new (nothrow)aTxn;
+		}
+
+		//Make the withdrawal
+		Balance += pLast->TxnAmt = -longWithdraw;
+
+		//Set pNext to null
+		pLast->pNext = NULL;
+	}
+	return Balance;
+}
+
+
+
+*******Bank Account Statement******
+
+void	BankAccount::Statement		()		{
+	//Method Name: Statement (BankAccount Class)
+	//Incoming Parameters: Null 
+	//Responsibilities: Display the account information
+	//Return Value: Null
+
+static int statementNum = 1;// Tracker for statements per account
+int withdrawDisplay = 0;	// Converts to positive number to display for the statement
+int withdrawTotal = 0;		// Total of all withdrawl amounts
+int depositTotal = 0;		// Total of all deposit amounts
+int i = 0; // Used to display the transaction number
+
+// current date / time based on system
+char date[9];
+_strdate_s(date);
+char time[9];
+_strtime_s(time);
+
+//Print title to screen
+cout << endl << " " << setfill('_') << setw(78) << "" << setfill(' ') << endl << endl;
+cout << setw(60) << left << " Luigi & Vito Syndicate Savings and Loan" << " Statement " << statementNum << endl;
+//Print date to screen
+cout << setw(6) << " Date: " << date << endl;
+//Print Time to screen
+cout << setw(6) << " Time: " << time << endl;
+//Print programmer name to screen
+cout << setw(6) << " Printed by: Kenton Jones" << endl;
+//Prints lines to screen to separate the header
+cout << " " << setfill('_') << setw(78) << "" << endl << endl;
+//Print account number to screen
+cout << " " << setfill(' ') << setw(18) << "Account Number: " << setw(1) << "[ " << setw(10) << ID << "]" << endl;
+//Print balance amount to screen
+cout << " " << setw(18) << "Current Balance: " << setw(1) << "[ $" << setw(9) << fixed << setprecision(2) << Balance / 100.00 << "]" << endl << endl;
+
+//Table contents
+//Print table heading
+cout << setw(39) << " Sequence " << setw(22) << "Deposits" << "Withdrawals" << endl;
+//lines to separate screen
+cout << " " << setfill('_') << setw(78) << "" << setfill(' ') << endl << endl;
+//Fill in the statement with valid transactions
+
+//test 
+if (pFirst == NULL){
+	//Advise if there has not been an attempted transaction on this account
+	cout << "There has been no activity on this account." << endl << endl;
+}
+else{
+	aTxn* pCurrent = pFirst;
+	do {
+		if (pCurrent->TxnAmt < 0){
+			//Display withdrawls
+			withdrawDisplay = -1 * (pCurrent->TxnAmt);
+			cout << " " << setw(3) << left << i + 1 << setw(59) << right << '$' << withdrawDisplay / 100.00 << endl;
+
+			// Add the withdrawl transaction to the total for withdrawls
+			withdrawTotal += withdrawDisplay;
+		}
+		else {
+			//Display deposits
+			cout << " " << setw(3) << left << i + 1 << setw(37) << right << '$' << (pCurrent->TxnAmt) / 100.00 << endl;
+			depositTotal += (pCurrent->TxnAmt);
+
+		}
+		// Point the address of previous element's pNext to this pCurrent
+		pCurrent = pCurrent->pNext;
+		i++;
+
+	} while (pCurrent);
+}
+
+//Fill in total transactions / transactions that were not accepted, and balance
+cout << " " << setw(16) << right << "" << setfill('=') << setw(62) << "" << setfill(' ') << endl;
+cout << " " << setw(17) << "(" << setw(3) << CurrentTxns() << ")" << " Transactions" << setw(6) << "$" << left << setw(8) << depositTotal / 100.00 << right << setw(14) << "$" << withdrawTotal / 100.00 << endl;
+cout << " " << setw(16) << "" << setfill('=') << setw(62) << "" << setfill(' ') << endl;
+cout << " " << setw(17) << " (" << setw(3) << numInvalidTxn << ")" << " Transactions which were not accepted." << endl << endl;
+cout << setw(57) << "Current Balance: " << setw(5) << " [ " << "$" << Balance / 100.00 << " ] " << endl << endl;
+
+
+//Increment the number of the statement. 
+statementNum++;
+}
