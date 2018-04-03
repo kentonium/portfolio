@@ -1,0 +1,164 @@
+Public Class frmRandom
+    '1) Name: Kenton Jones
+    '1) Date: December 04 2015
+    'This program uses a random number generator to roll dice and analyze numbers
+    Private Sub frmRandom_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        '2) call ResetDice
+        ResetDice()
+        'hide lbltotalRolls
+        lblTotalRolls.Visible = False
+    End Sub
+    '2) Name: ResetDice
+    'Sent: None
+    'Returned: None
+    'Reset all pictureboxes to not display
+    Sub ResetDice()
+        picLeft1.Visible = False
+        picLeft2.Visible = False
+        picLeft3.Visible = False
+        picLeft4.Visible = False
+        picLeft5.Visible = False
+        picLeft6.Visible = False
+        picRight1.Visible = False
+        picRight2.Visible = False
+        picRight3.Visible = False
+        picRight4.Visible = False
+        picRight5.Visible = False
+        picRight6.Visible = False
+
+    End Sub
+    Private Sub btnRollDice_Click(sender As Object, e As EventArgs) Handles btnRollDice.Click
+        Dim leftDice, rightDice, total As Integer
+        Dim rand As New Random 'cannot use a seed value here
+
+        '2) call resetdice
+        ResetDice()
+        '3) generate 2 random numbers between 1 and 6, store in leftDice and rightDice
+        leftDice = rand.Next(6) + 1
+        rightDice = rand.Next(6) + 1
+        '3) call DisplayDice to display dice, sending in the two numbers, return total
+        DisplayDice(leftDice, rightDice)
+        '3) use select case to determine what checkbox to display based on total
+        '3) Snake Eyes: 2 ones, Boxcars: 2 sixes, Natural: seven as total
+        Select Case total
+            Case 2
+                chkSnakeEyes.Checked = True
+            Case 12
+                chkBoxcars.Checked = True
+            Case 7
+                chkNatural.Checked = True
+
+        End Select
+        '6) bonus: once all checkboxes checked, display number of rolls in label
+        
+    End Sub
+    '3) Name: DisplayDice
+    'Sent: 2 integers (representing 2 rolls of the dice)
+    'Returned: integer (total)
+    'Use select case to determine which dice to display
+    Function DisplayDice(ByVal leftDice As Integer, ByVal rightDice As Integer) As Integer
+        Dim Total As Integer
+        Total = leftDice + rightDice
+        Return Total
+    End Function
+    Private Sub btnClearDice_Click(sender As Object, e As EventArgs) Handles btnClearDice.Click
+        Dim numcount As Double
+        '2) Call ResetDice
+        ResetDice()
+        'unselect all checkboxes and hide label
+        chkBoxcars.Checked = False
+        chkNatural.Checked = False
+        chkSnakeEyes.Checked = False
+        lblTotalRolls.Visible = False
+    End Sub
+    Private Sub btnResetRandom_Click(sender As Object, e As EventArgs) Handles btnResetRandom.Click
+        'clear listbox and display labels
+        lstNumbers.Items.Clear()
+        lblCount.Text = ""
+        lblLargest.Text = ""
+        lblSmallest.Text = ""
+    End Sub
+    Private Sub btnGenerate_Click(sender As Object, e As EventArgs) Handles btnGenerate.Click
+        Const MINSTART As Integer = 5
+        Const MAXSTART As Integer = 10
+        Const MINEND As Integer = 50
+        Const MAXEND As Integer = 75
+        Const RANDOMNUMBERS As Integer = 100 'how many numbers to generate
+        Const TITLESTART As String = "Random START Number"
+        Const TITLEEND As String = "Random END Number"
+        Dim rand As New Random(1000)
+        Dim minNumber, maxNumber As Integer
+        'call btnResetRandom
+        btnResetRandom.PerformClick()
+
+        '4) call ReadNumber sending start range and title, set minNumber
+        minNumber = ReadNumber(MINSTART, MAXSTART, TITLESTART)
+
+        '4) call ReadNumber sending end range and title, set maxNumber
+        maxNumber = ReadNumber(MINEND, MAXEND, TITLEEND)
+
+        '4) generate 100 random numbers using min and max read from user, write directly to listbox
+        For i As Integer = 1 To RANDOMNUMBERS Step 1
+            lstNumbers.Items.Add(rand.Next(minNumber, maxNumber))
+        Next
+    End Sub
+    '4) Name: ReadNumber
+    'Sent: 2 integers (min and max of range required), string to display as title in inputbox
+    'Returned: integer (number)
+    'Use inputbox to read a number between range sent
+    'Keep reading until integer within range is entered
+    Function ReadNumber(ByVal MINSTART As Integer, ByVal MAXSTART As Integer, ByVal TITLESTART As String) As Integer
+        Dim number As Integer
+        Dim x As String
+        x = InputBox("Input a number between " & MINSTART & " and " & MAXSTART, TITLESTART, CStr(MINSTART))
+        While Not Integer.TryParse(x, number) Or number < MINSTART Or number > MAXSTART
+            x = InputBox("Try again. Input a number between " & MINSTART & " and " & MAXSTART, TITLESTART, CStr(MINSTART))
+        End While
+        Return number
+    End Function
+
+    Private Sub btnAnalyze_Click(sender As Object, e As EventArgs) Handles btnAnalyze.Click
+        '5) if numbers are in the listbox, call procedures to find min and find max 
+        Dim MinInteger, maxInteger As Integer
+        If lstNumbers.Items.Count <> 0 Then
+            MinInteger = FindMin()
+            maxInteger = FindMax()
+            lblSmallest.Text = MinInteger.ToString
+            lblLargest.Text = maxInteger.ToString
+        End If
+        lblCount.Text = CStr(lstNumbers.Items.Count)
+    End Sub
+    '5) Name: FindMin
+    'Sent: none
+    'Returned: integer (minimum found in listbox)
+    'Go thru listbox from top to bottom and find the minimum number
+    Function FindMin() As Integer
+        Dim i As Integer = 0
+        Dim min As Integer = CInt(lstNumbers.Items(0))
+        Dim mininteger As Integer = lstNumbers.Items.Count
+        While i > mininteger - 1
+            If (CInt(lstNumbers.Items(i)) > min) Then
+                min = CInt(lstNumbers.Items(i))
+            End If
+            i += 1
+        End While
+        '    Return minInteger
+        Return min
+    End Function
+    '5) Name: FindMax
+    'Sent: none
+    'Returned: integer (maximum found in listbox)
+    'Go thru listbox from top to bottom and find the maximum number
+    Function FindMax() As Integer
+        Dim i As Integer = 0
+        Dim max As Integer = CInt(lstNumbers.Items(0))
+        Dim maxInteger As Integer = lstNumbers.Items.Count
+        While i < maxInteger - 1
+            If (CInt(lstNumbers.Items(i)) > max) Then
+                max = CInt(lstNumbers.Items(i))
+            End If
+            i += 1
+        End While
+        Return max
+    End Function
+End Class
