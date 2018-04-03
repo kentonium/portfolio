@@ -1,0 +1,123 @@
+
+<!--DATABASE CONNECTION -->
+<?php
+ //start session
+ session_start();
+ 
+ 	//"Connect to Database"
+	
+		//server
+		$db_server = "localhost";
+		
+		//database username
+		$db_user = "root";
+		
+		//database password
+		$db_password = "";
+		
+		//database name
+		$db_name = "kentonjones";
+	
+		//connect to the database
+		$db_connected = new mysqli($db_server, $db_user, $db_password, $db_name);
+	
+		//test connection
+		if ($db_connected->connect_error) {
+			trigger_error('Database connection failed: ' . $db_connected->connect_error, E_USER_ERROR);
+		}
+		
+		//get record set
+		$strSQL = "SELECT EmailAddress, Password, FirstName, LastName FROM customer";
+		
+		$rsCust = $db_connected->query($strSQL);
+
+		if($rsCust === false) {
+		trigger_error('Wrong SQL: ' . $strSQL . ' Error: ' . $db_connected->error, E_USER_ERROR);
+	} else {
+		$rows_returned = $rsCust->num_rows;
+	}
+	
+		// This is optional, but did you really intend to retrieve 0 records???	
+	if ( $rows_returned  == 0 ) {
+		die($db_name . " : " . $strSQL . " :  No records retrieved.");
+	}
+
+
+		
+?>
+
+
+
+
+<!--FUNCTIONING CODE-->
+<?php
+
+if (isset($_SESSION["userLoggedIn"])) {
+	// Check if the session variable has already been registered
+	echo 'Hello ' . $_SESSION["FullName"] . '. You are already logged in!';
+	echo '<br /><a href="SignOut.php">Log Out</a>';
+} else {
+	// Check that the login form was submitted
+	if (isset($_POST["username"])) {
+		
+			$_SESSION["userID"] = $_POST["username"];
+
+		
+				//sql statement
+	$strSQL = "Select EmailAddress, Password, FirstName, LastName FROM customer WHERE EmailAddress = '" . $_SESSION["userID"] . "'";
+	
+	$rowCust = $db_connected->query($strSQL);
+			
+		if ($rowCust->num_rows == 0){
+			echo '<h2>Email Address is not registered, or incorrect!<br>
+					<a href="Signin.php">Click here to try again!</a></h2>
+					';
+		} else{
+			$row = $rowCust->fetch_array(MYSQLI_ASSOC); 
+			
+			// The sha1 hash is stores in the database
+			if (sha1($_POST["password"]) == $row["Password"]) {
+				//echo sha1($_POST['password']);
+				
+				$_SESSION["userLoggedIn"] = $_POST["username"];
+				$_SESSION["FullName"] = $row["FirstName"] . " " . $row["LastName"];
+				$_SESSION["FirstName"] = $row["FirstName"];
+				$_SESSION["LastName"] = $row["LastName"];
+				echo 'Hello ' . $_SESSION["FullName"] . ', ';
+				echo 'you\'ve logged in!';
+				echo '<br /><a href="SignOut.php">Log Out</a>';
+
+
+
+			} else {
+				echo '<h2>';
+			  	echo ' Incorrect password! <a href="../Reg/Signin.php"><h2>Click here to try again!</h2></a>';
+				echo ' </h2>';
+			}
+		}
+		} else {
+		// Display login form
+		echo '
+		
+		<!-- This page "loops back" onto itself when form is submitted because action is not set to any other page. -->
+		<!-- method="POST" passes form control contents via local memory.                                           -->
+		
+			<form name="login_form" action="" method="POST">
+				<label for="username"><h2>User Name</h2></label>
+				<input type="text" name="username" id="username" /><br />
+				<label for="password"><h2>Password </h2> </label>
+				<input type="password" name="password" id="password" /><br />
+				
+				<div class="SignInFormButtons">
+				
+				<input type="submit" value="Login" />
+				
+				</div>
+				<a href = " ../Reg/index.php"><h2>Need an Account? Click Here!</h2></a>
+			</form>
+		
+		';
+	}
+}
+
+?>
