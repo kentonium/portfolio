@@ -1,0 +1,37 @@
+DECLARE
+  Cursor concursor IS -- explicit cursor to create the table
+    Select c_id, c_first || '  ' || rtrim(c_last) as conname, c_phone, c_email
+    From consultant
+    Where c_city = 'Eau Claire';
+  conrow           concursor%rowtype;
+  consultantcount  number(3) := 0;
+
+BEGIN
+  --title header
+  DBMS_OUTPUT.PUT_LINE('Current List of Consultants in Eau Claire');
+  DBMS_OUTPUT.PUT_LINE('Cons#   Name                  Phone          email');
+  DBMS_OUTPUT.PUT_LINE('====================================================');
+  OPEN concursor; -- open the cursor
+  Loop -- start the loop
+    FETCH concursor INTO conrow; -- bring the row into the row variable
+    EXIT WHEN concursor%NOTFOUND; -- If the cursor doesn't exist exit loop
+--Display results
+    DBMS_OUTPUT.PUT_LINE(rpad(conrow.c_id, 8) || rpad(conrow.conname, 22) ||
+    rpad(conrow.c_phone,15) || rtrim(conrow.c_email));
+--Increment consultant count
+    consultantcount := consultantcount + 1;
+  END Loop;
+--Display count of consultants
+  DBMS_OUTPUT.PUT_LINE('Total number of consultants: ' || consultantcount);
+--Close the cursor
+  CLOSE concursor;
+
+EXCEPTION
+-- Handles no data found exception in a manageable error and in case something unexpected happens
+  When NO_DATA_FOUND then
+    DBMS_OUTPUT.PUT_LINE('There is no one from Eau Claire.');
+  When Others then
+    DBMS_OUTPUT.PUT_LINE('An unexpected error has occured ' || SQLERRM);
+
+END;
+/

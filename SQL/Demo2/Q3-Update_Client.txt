@@ -1,0 +1,38 @@
+DECLARE -- declared variables for input
+  contactid         client.client_id%type := 7;
+  contactfirstname  client.contact_first%type := 'Mary-May';
+  contactlastname   client.contact_last%type := 'Madill';
+  contactphone      client.contact_phone%type := 5067219251;
+  areacode          VARCHAR2(3);
+  phoneexchange     VARCHAR2(3);
+  phoneextension    VARCHAR(4);
+
+BEGIN
+--variables for displaying phone number in a user friendly manner
+  areacode          := SUBSTR(contactphone, 1, 3);
+  phoneexchange     := SUBSTR(contactphone, 4, 3);
+  phoneextension    := SUBSTR(contactphone, 7, 4);
+
+  UPDATE client -- update the specified client to the new information
+    SET contact_first = contactfirstname, contact_last = contactlastname,
+    contact_phone = contactphone
+    WHERE client_id = contactid;
+  commit;
+--Display a message to user
+  DBMS_OUTPUT.PUT_LINE(' Client #' || to_char(contactid) || ' has been updated to ' ||
+  contactfirstname || ' ' || contactlastname || ', reachable at (' ||
+  to_char(areacode) || ') ' || to_char(phoneexchange) || '-' ||
+  to_char(phoneextension) || '.');
+  
+EXCEPTION
+  When ROWTYPE_MISMATCH then -- A string is put into a number, vice versa, etc
+    DBMS_OUTPUT.PUT_LINE('The row types do not all match.');
+  When TOO_MANY_ROWS then -- More variables than rows attempted to be placed
+    DBMS_OUTPUT.PUT_LINE('You have entered too many rows.');
+  When VALUE_ERROR then -- Value of input is too large for the datatype settings
+    DBMS_OUTPUT.PUT_LINE('The value you have entered is too big.');
+  When Others then -- Anything else
+    DBMS_OUTPUT.PUT_LINE('An unexpected error has occured ' || SQLERRM);
+  
+END;
+/

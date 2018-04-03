@@ -1,0 +1,39 @@
+CREATE SEQUENCE addperson -- sequence used to add someone to the consultant list
+  start with 106 -- next available number
+  increment by 1 -- increment based on current increment
+  maxvalue 999;
+
+DECLARE -- All variables delcared here for convenient output if change is needed
+  cid              number(3)                := addperson.nextval;
+  confirstname     consultant.c_first%type  := 'Kenton';
+  conlastname      consultant.c_last%type   := 'Jones';
+  conmiddleinit    consultant.c_mi%type     := 'O';
+  conaddress       consultant.c_add%type    := '23 Quispamsis Rd';
+  concity          consultant.c_city%type   := 'Quispamsis';
+  constate         consultant.c_state%type  := 'NB'; --Province?
+  conzip           consultant.c_zip%type    := 'E2E1M2';
+  conphone         consultant.c_phone%type  := '5063431830';
+  conemail         consultant.c_email%type  := 'kentronjones@hotmail.com';
+
+BEGIN
+-- Put the values into the proper table rows
+  Insert into consultant (c_id, c_first, c_last, c_mi, c_add, c_city, c_state, c_zip, c_phone, c_email)
+-- cid puts in the sequence and the next value in the sequence
+    values (cid, confirstname, conlastname, conmiddleinit, conaddress, concity, constate, conzip, conphone, conemail);
+  commit;
+  DBMS_OUTPUT.PUT_LINE(' A row has been added for consultant ' || to_char(confirstname || ' ' || conlastname) || ' with ID number ' || to_char(cid) || '.');
+
+EXCEPTION -- check for errors
+  When DUP_VAL_ON_INDEX then -- ID is already in use
+    DBMS_OUTPUT.PUT_LINE('There is already a consultant with that ID number.');
+  When ROWTYPE_MISMATCH then -- A string is put into a number, vice versa, etc
+    DBMS_OUTPUT.PUT_LINE('The row types do not all match.');
+  When TOO_MANY_ROWS then -- More variables than rows attempted to be placed
+    DBMS_OUTPUT.PUT_LINE('You have entered too many rows.');
+  When VALUE_ERROR then -- Value of input is too large for the datatype settings
+    DBMS_OUTPUT.PUT_LINE('The value you have entered is too big.');
+  When Others then -- Anything else
+    DBMS_OUTPUT.PUT_LINE('An unexpected error has occured' || SQLERRM);
+  
+END;
+/
