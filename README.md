@@ -1,5 +1,5 @@
 # General Overview
-Portfolio of scripts and projects created by me.
+Portfolio of scripts, projects and general code created by me.
 
 ## C++
 
