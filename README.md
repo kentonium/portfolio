@@ -1,9 +1,7 @@
-# Portfolio
+# General Overview
 Portfolio of scripts and projects created by me.
 
-# General Overview
-
-# C++
+## C++
 
  C++ was the third coding language I learned. It was not too difficult to get a firm grasp on with the previous language building blocks I had already been taught. The only real challenge was learning the new syntax. This class lasted two terms with two different teachers. This allowed me to get two different views on ways to use C++, although making the course a little tougher.  Initially I resented C++ because it was less explanatory than Visual Basic but over the time functionality of it became very apparent and I started wishing we had begun with this in the first place. It was far easier working with loops and functions in this program once I got the hang of it, and we only skimmed a small portion of the potential from this language. I’m very excited to further my learning in this language with my future careers.
  
