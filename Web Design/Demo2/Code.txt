@@ -1,0 +1,198 @@
+<?php
+  //start session
+ session_start();
+?>
+ 
+<HTML>
+ 
+<HEAD>
+
+	<!--Favicon implementation-->
+	<link rel="shortcut icon" href="../favicon.ico">
+
+<TITLE>Contact Us : SafeCo</TITLE>
+
+<meta name="description" content = "Contact us using any one of our contact methods, or find us with our map!">
+<meta name="author" content = "Kenton Jones, kentronjones@hotmail.com">
+
+<!--Tells the browser the character encodement before it moves on-->
+<meta charset="UTF-8">
+
+
+<LINK HREF="Include/Contact_Us_Style.css" TYPE="text/css" REL="STYLESHEET">
+<script language="javascript" src="../Include/menuitems.js" type="text/javascript"></script>
+<script language="javascript" src="../Include/menu.js" type="text/javascript"></script>
+
+</HEAD>
+
+<BODY>
+<!-- Main div for content -->
+	<div id="Main">
+	
+			<!-- Div containing left column items, contact information-->
+			<div class="ContactLeftCol">	
+				<h1>
+					Saint John Location Phone Number:
+					<br>1-506-632-9440
+					<br><br>
+					Customer Satisfaction:
+					<br>1-800-466-33768
+					<br><br>
+					Fax:
+					<br>212-555-1212
+					<br><br>
+					Address:
+					<br>950 Grandview Avenue, Saint John New Brunswick Canada
+					<br>E2J 4C5
+					<br><br>
+					<!-- Email link with body started and subject line filled-->
+					Or E-Mail us at:<a href="mailto:kentronjones@hotmail.com?subject=Questions%20or%20Concerns
+											 &body=Dear%20Kenton%2C %0D"><h1>kentronjones@hotmail.com</h1></a>
+					by clicking here!
+				<h1>
+				
+			</div>
+			
+			<!--div allowing the letter image to be placed seperately from the text-->
+			<div id="MailImage">
+			
+				<!--Img tag along with mouseover events to allow for a cool transition-->
+				<img border = "0" src = "Images/Email_Icon.jpg" width="200" height="200"
+				onmouseover="this.src='Images/Email_Icon_Open.jpg'" onmouseout="this.src='Images/Email_Icon.jpg'">
+
+			</div>
+			
+			<!--Div to hold the second column-->
+			<div class="ContactRightCol">
+	
+					<!--Location image and link to google maps -->
+				<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2807.136889285242!2d-65.99567258444849!3d45.28545547909916!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4ca7b3cff8cff963%3A0x4a9bfd96e7ff7bf5!2s950+Grandview+Ave%2C+St+John%2C+NB+E2J+4C5!5e0!3m2!1sen!2sca!4v1456486774658" 
+					width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+
+			</div>
+	</div>
+
+
+			<!-- Left Menu -->
+	<!-- create_menu() is the "main engine" of the process to display the JavaScript-powered menu on the left 								-->
+	<!-- The code is found in menu.js located in the Include directory 																		-->
+	<!-- The actual menu items themselves are found in the array LeftMenuLinks found in menuitems.js located in the Include directory 		-->
+	<!-- Note how LeftMenuLinks are passed to the function create_menu() as a paramter.														-->
+	<!-- To create an entirely new menu (ie for an entirely different type of type), all you need to do is create another file of "links" 	-->
+	<!-- and reference that instead.  There are other ways too if you think about it.														-->
+	
+	<div id="LeftMenu">	
+		 <script language="javascript" type="text/javascript">create_menu('LeftMenu', LeftMenuLinks, LeftMenuProps);</script >	
+	</div>
+	<!-- End of Left Menu -->
+	
+	
+<!-- Header -->
+	<div id="Header">
+	
+  		 <div id="HeaderLeft">     
+            <a href="../index.php"> <img alt="Home Page" src="../Images/logo.gif" width="135" height="30" border="0" align="left" /> </a>
+		 </div>
+		 
+		 <div id="HeaderRight">         
+            <a href="../Cart/index.php" class="header">
+			<img src="../Images/shoppingcart.gif" height="18" width="127" border="0" align="ABSMIDDLE" />
+						<?php
+			if(isset($_SESSION["cart"])){
+				echo 'Contains ' . $_SESSION['num_items'] . ' Items';
+			}else{
+			echo 'Contains 0 Items';
+			}
+			?>
+			</a>
+		 </div>
+		          
+    </div>
+    <!-- End of Header  -->
+	
+	
+			<!-- Menu Bar -->
+	<div id="MenuBar">
+   
+   		 <div id="MenuBarLeft">
+		<?php
+			if (isset($_SESSION["userLoggedIn"])) {
+				//check if session exists
+				echo '
+				<a href = "../Reg/SignIn.php" class="headerbar">Welcome, ' . $_SESSION["FullName"] . ' </a>
+				';
+			}else{
+				echo' 
+				<a href="../Reg/SignIn.php" class="headerbar">You are not signed in</a>
+			';
+			}
+
+			?>
+			</div>
+        
+		 <div id="MenuBarRight">
+            <a href="../Reg/SignIn.php" class="headerbar">| My Account</a> 
+			<a href="../Cart/index.php" class="headerbar">| My Cart</a> 
+			<a href="../Cart/Checkout.php" class="headerbar">| Checkout</a> 
+			<a class="headerbar" href="../ContactUs.php">| Contact Us</a>
+		</div>
+         
+	</div>
+    <!-- End of Menu Bar -->
+
+	
+	
+	<!-- "You Are Here" and Search -->
+	<div id="Search"> 
+   
+   		 <div id="SearchLeft">
+            <form action="../search/index.php" method="get">
+				  <input type="text" name="txtsearch" value="Search" size="15" />
+				  <input type="image" src="../images/go.gif" border="0" width="26" height="21"  align="middle" /> 
+			</form>
+		 </div>
+        
+				<div id="YouAreHereList">		 	
+			 <form action="">
+			  <!-- Note how the appropriate menu item was selected -->
+                 <select onchange="document.location=this.value" name="CatId">
+                       <option value="../Electrical/index.php" selected="selected">Seasonal</option>
+                       <option value="../Electrical/Lighting.php">Hardware</option>
+                       <option value="../Electrical/Safety.php">Electrical</option>
+                 </select>
+            </form>
+		</div>
+		
+		 <div id="YouAreHereLinks">		 
+		 	
+			<a href="../index.php">Home</a> &raquo; 
+			<a href="ContactUs.php">Contact Us</a> &raquo; &nbsp;
+            
+		 </div>
+		 
+		 
+	    
+		
+	</div>	
+	<!-- End of "You Are Here" and Search -->
+
+
+		 
+			<!-- Footer -->
+	
+		 
+		<?php include("Include/Footer.php"); ?>
+
+		
+	<!-- End of Footer call-->
+
+
+		<!-- Left Ads -->
+	<div class="LeftAds">
+	<?php include ('Include/LeftAds.php'); ?>
+	</div>
+	<!-- End of Left Ads -->
+
+</BODY>
+</HTML>
+
