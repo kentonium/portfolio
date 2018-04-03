@@ -1,0 +1,90 @@
+*******Create an Array of Information*******
+
+	// Declare a local array of 80 RecordHolders, *more* than enough to meet our current requirements.
+	// Generally, design considerations dictate you overengineer storage requirements to exceed current required quantity.
+	RecordHolder LandSpeed[80] = {
+
+		{ 1937, "Thunderbolt", "Eyston G.", 501.160, " " }, { 1970, "Blue Flame", "Gabelich G.", 1014.656, " " },
+		{ 3000, "TestAA", "TestAB", 1223.000, " " }, { 3001, "TestAC", "TestAD", 1020.000, " " },
+		{ 1947, "Railton Mobil Special", "Cobb J.", 633.79, " " }, { 3002, "TestAE", "TestAF", 1014.000, " " },
+
+		{ 3003, "TestAG", "TestAH", 893.000, " " }, { 1902, "Oeuf de Paques", "Serpollet L.", 120.800, " " },
+		{ 1928, "Triplex Special", "Leech R.", 334.007, " " }, { 1929, "Blue Bird", "Campbell M.", 396.025, " " },
+		{ 3004, "TestAI", "TestAJ", 633.000, " " }, { 1939, "Railton Special", "Cobb J.", 595.040, " " },
+
+		{ 3005, "TestAK", "TestAL", 595.000, " " }, { 3006, "TestAM", "TestAN", 501.000, " " },
+		{ 1906, "Stanley Rocket", "Marriott F.", 205.440, " " }, { 1937, "Blue Bird", "Campbell M.", 484.598, " " },
+		{ 3007, "TestAO", "TestAP", 484.000, " " }, { 3008, "TestAQ", "TestAR", 396.000, " " },
+
+		{ 1983, "Thrust 2", "Noble R.", 1020.406, " " }, { 1997, "ThrustSSC", "Green A.", 1223.657, " " },
+		{ 4000, "TestBA", "TestBB", 372.000, " " }, { 4001, "TestBC", "TestBD", 334.000, " " },
+		{ 1929, "Irving-Napier", "Segrave H.", 372.459, " " }, { 4002, "TestBE", "TestBF", 333.000, " " },
+
+		{ 4003, "TestBG", "TestBH", 327.000, " " }, { 1965, "SOA-Sonic 1", "Breedlove C.", 893.966, " " },
+		{ 1909, "Benz No. 1", "Hemery V.", 202.680, " " }, { 1927, "Mystery", "Segrave H.", 327.970, " " },
+		{ 1928, "Blue Bird", "Campbell M.", 333.048, " " }, { 4004, "TestBI", "TestBJ", 202.000, " " },
+
+		{ 4005, "TestBK", "TestBL", 205.000, " " }, { 4006, "TestBM", "TestBN", 120.000, " " },
+		{ 4007, "TestBO", "TestBP", 63.000, " " }, { 1898, "Jeantaud Duc", "Chasseloup-Laubat G.", 63.150, " " },
+		{ 4008, "TestBQ", "TestBR", 1225.00, " " }, { 5000, "TestCA", "TestCB", 1226.00, " " },
+
+		{ 5001, "TestCC", "TestCD", 1230.00, " " }, { 5002, "TestCE", "TestCF", 1235.00, " " },
+		{ 5003, "TestCG", "TestCH", 2230.00, " " }, { 5004, "TestCI", "TestCJ", 2235.00, " " },
+		{ 5005, "TestCK", "TestCL", 3230.00, " " }, { 5006, "TestCM", "TestCN", 3235.00, " " }
+
+	};
+
+*******Bubble Sort*******
+
+	// Written correctly, this function uses the Bubble Sort algorithm to arrange pointers 
+	// in descending order by field Speed.
+	// Function will return the actual number of swaps performed.  
+	// This number will obviously vary depending on the test data.
+	TotalNumberOfSwaps = DESCByPtrs(pLS, NumberOfRecords);
+
+	cout << "\n\nDisplay original unsorted array...\n\n" << endl;
+	cout << setiosflags(ios::left);
+
+	// Should be in original (unsorted) order.
+	for (i = 0; i<NumberOfRecords; i++) {
+		cout << "( ";
+		cout << setw(25) << LandSpeed[i].Vehicle;
+		cout << setw(8) << LandSpeed[i].Speed;
+		// Note the use of structure notation	(Name of Array Element).(Field found in Struct Definition)
+		cout << " )";
+
+		if ((i + 1) % 2 == 0) cout << endl;  // Do a newline every 2nd RecordHolder
+	}
+
+	cout << "\n\nDisplay array using the pointers..." << endl;
+	cout << "Should be in order from fastest to slowest...\n\n" << endl;
+	cout << setiosflags(ios::left);
+
+	// Data should appear in sorted order.
+	for (i = 0; i<NumberOfRecords; i++) {
+		cout << "( ";
+		cout << setw(25) << pLS[i]->Vehicle;
+		cout << setw(8) << pLS[i]->Speed;
+		// Note the use of pointer to/structure notation	(Pointer)->(Field found in Struct Definition)
+		cout << " )";
+
+		if ((i + 1) % 2 == 0) cout << endl;  // Do a newline every 2nd RecordHolder
+	}
+
+
+
+	cout << endl << endl;
+
+	// Display "measurement" of "actual amount of work performed"
+	cout << "\nSorting Pointers to Structures ----->";
+	cout << "\nTotal number of swaps performed " << TotalNumberOfSwaps
+		<< "\nTotal number of bytes moved "
+		<< TotalNumberOfSwaps * 3 * sizeof(RecordHolder*)
+		<< endl << endl;
+
+
+
+
+	system("PAUSE");
+	return;
+}
