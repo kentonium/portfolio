@@ -1,0 +1,88 @@
+<!--CONNECTION, GRABBING COOKIES TO EDIT-->
+<?php
+
+	session_start();
+
+	if (isset($_GET['destroy'])) {
+	
+		if (isset($_SERVER['HTTP_COOKIE'])) {     
+				$cookies = explode(';', $_SERVER['HTTP_COOKIE']);     
+				foreach($cookies as $cookie) {         
+					$parts = explode('=', $cookie);         
+					$name = trim($parts[0]);         
+					setcookie($name, '', time()-1000);         
+					setcookie($name, '', time()-1000, '/');     
+		} 
+	} 	
+								   				 
+	}
+
+	//"Connect to Database"
+	
+		//server
+		$db_server = "localhost";
+		
+		//database username
+		$db_user = "root";
+		
+		//database password
+		$db_password = "";
+		
+		//database name
+		$db_name = "kentonjones";
+	
+		//connect to the database
+		$db_connected = new mysqli($db_server, $db_user, $db_password, $db_name);
+	
+		//test connection
+		if ($db_connected->connect_error) {
+			trigger_error('Database connection failed: ' . $db_connected->connect_error, E_USER_ERROR);
+		}
+		
+		$strEmailAddress 		  		= isset ($_COOKIE['EmailAddress'])		 	 ?		$_COOKIE['EmailAddress']  				: "no";
+		$strPassword					= isset ($_COOKIE['Password'])				 ?		$_COOKIE['Password']					: "no";
+		$strFirstName					= isset ($_COOKIE['FirstName'])				 ?		$_COOKIE['FirstName']					: "no";
+		$strLastName					= isset ($_COOKIE['LastName'])				 ?		$_COOKIE['LastName']					: "no";
+		$strTitle					= isset ($_COOKIE['Title'])			 	 ?		$_COOKIE['Title']					: "no";
+		$strTitleNumber					= isset ($_COOKIE['TitleNumber'])			 ?		$_COOKIE['TitleNumber']					: "no";		
+		$strAddressLine1				= isset ($_COOKIE['Address1'])				 ?		$_COOKIE['Address1']					: "no";
+		$strAddressLine2				= isset ($_COOKIE['Address2'])				 ?		$_COOKIE['Address2']					: "no";
+		$strHomePhone					= isset ($_COOKIE['HomePhone'])				 ?		$_COOKIE['HomePhone']					: "no";
+		$strWorkPhone					= isset ($_COOKIE['WorkPhone'])				 ?		$_COOKIE['WorkPhone']					: "no";
+		$strProvince					= isset ($_COOKIE['Province'])				 ?		$_COOKIE['Province']					: "no";
+		$strProvinceNumber				= isset ($_COOKIE['ProvinceNumber'])			 ?		$_COOKIE['ProvinceNumber']				: "no";				
+		$strCreditCardType				= isset ($_COOKIE['CreditCardType'])		 	 ?		$_COOKIE['CreditCardType']				: "no";
+		$strCreditCardTypeNum			= isset ($_COOKIE['CreditCardTypeNum'])				 ?		$_COOKIE['CreditCardTypeNum']				: "no";
+		$strCreditCardNumber			= isset ($_COOKIE['CreditCardNumber'])		 		 ?		$_COOKIE['CreditCardNumber']				: "no";
+		$strCreditCardExpireMonthNumber	= isset ($_COOKIE['CreditCardExpireMonthNumber'])			 ?		$_COOKIE['CreditCardExpireMonthNumber']			: "no";
+		$strCreditCardExpireYearNumber	= isset ($_COOKIE['CreditCardExpireYearNumber'])			 ?		$_COOKIE['CreditCardExpireYearNumber']			: "no";
+		$strCreditCardName				= isset ($_COOKIE['CreditCardName'])			 ?		$_COOKIE['CreditCardName']				: "no";
+		$strLanguage					= isset ($_COOKIE['Language'])				 ?		$_COOKIE['Language']					: "no";
+		$strFridge					= isset ($_COOKIE['Fridge'])				 ?		$_COOKIE['Fridge']					: "no";
+		$strMicrowave					= isset ($_COOKIE['Microwave'])				 ?		$_COOKIE['Microwave']					: "no";
+		$strBlender					= isset ($_COOKIE['Blender'])				 ?		$_COOKIE['Blender']					: "no";
+		$strCoffeeMachine				= isset ($_COOKIE['CoffeeMachine'])			 ?		$_COOKIE['CoffeeMachine']				: "no";
+		$strDishwasher					= isset ($_COOKIE['Dishwasher'])			 ?		$_COOKIE['Dishwasher']					: "no";
+		$strOven					= isset ($_COOKIE['Oven'])				 ?		$_COOKIE['Oven']					: "no";
+	
+		$strEncryptPass = sha1($strPassword);
+	
+		$strSQL = "INSERT INTO customer (EmailAddress, Password, FirstName, LastName, Title, HomePhone, WorkPhone, AddressLine1, AddressLine2, 
+					Province, CreditCardType, CreditCardNumber, ExpirtyDateMonth, ExpirtyDateYear, CardholderName, LanguagePreference, Fridge, Microwave, 
+					Blender, CoffeeMachine, Dishwasher, Oven)
+					VALUES ('$strEmailAddress', '$strEncryptPass', '$strFirstName', '$strLastName', '$strTitle', '$strHomePhone', '$strWorkPhone', '$strAddressLine1', '$strAddressLine2', 
+			    '$strProvince', '$strCreditCardType', '$strCreditCardNumber', '$strCreditCardExpireMonthNumber', '$strCreditCardExpireYearNumber', 
+				'$strCreditCardName', '$strLanguage', '$strFridge', '$strMicrowave', '$strBlender', '$strCoffeeMachine', '$strDishwasher', '$strOven')";
+		
+		$rsCust = $db_connected->query($strSQL);
+				
+		//Execute SQL to get the requested record set
+		if ($rsCust === false) {
+			trigger_error('Wrong SQL: ' . $strSQL . ' Error: ' . $db_connected->error, E_USER_ERROR);
+		}
+	
+	// End of "Connect to Database"	
+
+?>
+
+<!--
