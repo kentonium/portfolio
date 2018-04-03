@@ -1,0 +1,72 @@
+/*
+Assignment 3
+Question 2
+Kenton Jones
+Will allow the user to display a list of student names for students
+registered based on the course section. It also displays the course
+name and how many students are registered.
+*/
+ 
+CREATE OR REPLACE PROCEDURE ListStudents
+       (inCourse IN course_section.c_sec_id%type)
+
+AS 
+
+CURSOR studentCursor IS
+  select c_sec_id, s_first || ' ' || s_last as studName
+  from course_section inner join enrollment using (c_sec_id)
+    inner join student using (s_id)
+  where c_sec_id = inCourse;
+-- Row to move through the cursor
+studentRow studentCursor%rowtype; 
+
+--variable for testing that the course exists
+CourseExists   enrollment.c_sec_id%type;
+courseName     course.course_name%type;
+totalStud      number(3);
+
+BEGIN
+--Initialize the totalStud variable
+   totalStud := 0;
+   
+--Check that the row exists
+  select count(*)
+    into CourseExists
+  from enrollment
+  where c_sec_id = inCourse;
+
+--Raise error flag if no data
+  IF courseExists = 0 THEN
+    raise NO_DATA_FOUND;
+  ELSE
+
+--select the course name to be displayed 
+    select course_name
+      into courseName
+    from course
+    inner join course_section
+    using (course_id)
+    where c_sec_id = inCourse;
+    
+--Display the course information
+    DBMS_OUTPUT.PUT_LINE('Course: ' || courseName);
+    FOR studentRow IN studentCursor LOOP
+      DBMS_OUTPUT.PUT_LINE(studentRow.studName);
+      totalStud := totalStud + 1;
+    END LOOP;
+
+--Display how many students are enrolled
+    DBMS_OUTPUT.PUT_LINE(to_char(totalStud) || ' students are enrolled. ');
+  END IF;
+
+EXCEPTION
+  when NO_DATA_FOUND then
+    DBMS_OUTPUT.PUT_LINE(' There is no such course.');
+
+END ListStudents;
+/
+  
+
+EXECUTE ListStudents(1010);
+
+EXECUTE ListStudents(1001);

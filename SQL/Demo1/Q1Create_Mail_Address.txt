@@ -1,0 +1,50 @@
+/*Assignment 3
+Question 1
+Kenton Jones
+Will allow the user to retrieve the address of a student with the
+id specified. the values for street, city, and phone number are displayed
+or error.*/
+
+CREATE OR REPLACE PROCEDURE Mail_Address
+  (inId IN student.s_id%type)
+
+As
+
+--variables
+StudentExists   number(3);
+studName        varchar2(30);
+studAdd         student.s_add%type;
+studCityState   varchar2(22);
+studZip         student.s_zip%type;
+
+BEGIN
+--Check that the row exists
+  select count(*)
+  into StudentExists
+  from student
+  where S_ID = inId;
+
+  IF StudentExists = 0 then
+    Raise NO_DATA_FOUND;
+  Else
+  --Select all the required fields
+    select S_FIRST || ' ' || S_LAST, S_ADD, s_city || ', ' || s_state,
+    s_zip
+      into studName, studAdd, studCityState, studZip
+      from student
+    where S_ID = inId;
+  --Display student information
+    DBMS_OUTPUT.PUT_LINE(studName);
+    DBMS_OUTPUT.PUT_LINE(studAdd);
+    DBMS_OUTPUT.PUT_LINE(studCityState);
+    DBMS_OUTPUT.PUT_LINE(studZip);
+  End If;
+
+EXCEPTION
+  When NO_DATA_FOUND then
+    DBMS_OUTPUT.PUT_LINE(' No Such Student.');
+END Mail_Address;
+/
+
+execute Mail_Address(102);
+execute Mail_Address(223);
